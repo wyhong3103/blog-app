@@ -30,7 +30,6 @@ export const Login = () => {
             body : JSON.stringify({username, password})
         });
         const data = await res.json();
-        console.log(data);
         if (data.status){
             Cookies.set('accessToken', data.accessToken);
             navigate('/');
