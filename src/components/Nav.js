@@ -1,10 +1,21 @@
 import { Flex, Spacer, VStack, HStack, Box, Heading, Link } from "@chakra-ui/react"
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
 export const Nav = () => {
     const [logged, setLogged] = useState(false);
+    const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_BLOG_API_URL;
+
+    const logout = () => {
+        const accessToken = Cookies.get('accessToken');
+        if (accessToken !== undefined){
+            Cookies.remove('accessToken');
+        }
+        navigate('/');
+        window.location.reload();
+    };
 
     //check if logged in 
     useEffect(
@@ -56,7 +67,7 @@ export const Nav = () => {
                     {
                         logged ? 
                         <Box>
-                            <Link href='/logout'>Log Out</Link>
+                            <Link onClick={logout}>Log Out</Link>
                         </Box>
                         :
                         <>
