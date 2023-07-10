@@ -1,6 +1,6 @@
 import { Nav } from "../components/Nav"
 import { useNavigate } from "react-router-dom"
-import { Heading, Flex, VStack, Input, InputGroup, InputRightElement, Button, FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react'
+import { Heading, Flex, VStack, Input, InputGroup, InputRightElement, Button, FormControl, FormLabel, FormErrorMessage, cookieStorageManager } from '@chakra-ui/react'
 import { useState, useEffect } from "react"
 import Cookies from "js-cookie"
 
@@ -108,8 +108,8 @@ export const Register  = () => {
                                 onChange={handleRePasswordChange}
                                 pr='4.5rem'
                                 type={show2 ? 'text' : 'password'}
-                                placeholder='Enter password'
-                                id='password'
+                                placeholder='Enter confirmation password'
+                                id='repassword'
                             />
                             <InputRightElement width='4.5rem'>
                                 <Button h='1.75rem' size='sm' onClick={() => setShow2(!show2)}>
@@ -120,9 +120,13 @@ export const Register  = () => {
                         </Flex>
                         {
                             error.length > 0 ? 
-                            error.map(
-                                i => <FormErrorMessage>{i}</FormErrorMessage>
-                            )
+                            <VStack>
+                                {
+                                    error.map(
+                                        i => <FormErrorMessage>{i}</FormErrorMessage>
+                                    )
+                                }
+                            </VStack>
                             :
                             null
                         }

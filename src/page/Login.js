@@ -1,6 +1,6 @@
 import { Nav } from "../components/Nav"
 import { useNavigate } from "react-router-dom"
-import { Heading, Flex, VStack, Input, InputGroup, InputRightElement, Button, FormControl, FormLabel, FormErrorMessage, addPrefix } from '@chakra-ui/react'
+import { Heading, Flex, VStack, Input, InputGroup, InputRightElement, Button, FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react'
 import { useState, useEffect } from "react"
 import Cookies from "js-cookie"
 
@@ -98,9 +98,13 @@ export const Login = () => {
 
                         {
                             error.length > 0 ? 
-                            error.map(
-                                i => <FormErrorMessage>{i}</FormErrorMessage>
-                            )
+                            <VStack>
+                                {
+                                    error.map(
+                                        i => <FormErrorMessage>{i}</FormErrorMessage>
+                                    )
+                                }
+                            </VStack>
                             :
                             null
                         }
