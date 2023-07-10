@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import Cookies from "js-cookie";
-import { Button, Input, Text, Flex, VStack, Center, FormErrorMessage } from "@chakra-ui/react";
+import { Button, Input, Text, Flex, VStack, Center } from "@chakra-ui/react";
 
 export const Create = () => {
     const editorRef = useRef(null);
@@ -20,6 +20,10 @@ export const Create = () => {
     const submit = async () => {
       if (editorRef.current) {
         const body = { title, body : editorRef.current.getContent()};
+        if (title.length === 0 || body.body.length === 0){
+            setError(["Title and body must not be empty!"]);
+            return;
+        }
         const accessToken = Cookies.get('accessToken');
         const res = await fetch(apiUrl + '/blog', 
             {
@@ -101,21 +105,21 @@ export const Create = () => {
                     }}
                     />
                 </Flex>
-                <Button onClick={submit}>
-                    Post
-                </Button>
                 {
                     error.length > 0 ? 
                     <VStack>
                         {
                             error.map(
-                                i => <FormErrorMessage>{i}</FormErrorMessage>
+                                i => <Text color='#ec6e6e'>{i}</Text>
                             )
                         }
                     </VStack>
                     :
                     null
                 }
+                <Button onClick={submit}>
+                    Post
+                </Button>
             </VStack>
             :
             (
