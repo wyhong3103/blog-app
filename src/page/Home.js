@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Nav } from "../components/Nav"  
-import { Wrap, WrapItem, Flex, Heading, Text } from "@chakra-ui/react"
+import { Flex, Spacer, Heading, Text, VStack, Box, Center } from "@chakra-ui/react"
 
 export const Home = () => {
     const [blogs, setBlogs] = useState([]);
@@ -25,41 +25,62 @@ export const Home = () => {
     return(
         <>
             <Nav/>
-            <Wrap p='50px' justify='center'>
-                {
-                    blogs.length > 0 ?
-
-                    blogs.map(
-                        (i) => {
-                            return(
-                                <WrapItem onClick={() => toBlog(i._id)}>
-                                    <Flex 
-                                        transition='background-color 0.2s' 
-                                        w='300px' 
-                                        h='150px' 
-                                        direction='column' 
-                                        justify='center' 
-                                        align='center' 
-                                        borderRadius='10px'
-                                        _hover={{bg : '#e5e5e5', cursor : 'pointer'}}
-                                    >
-                                        <Heading size='md'>
-                                        {i.title}
-                                        </Heading>
-                                        <Text>
-                                        {i.author.username}
-                                        </Text>
-                                    </Flex>
-                                </WrapItem>
+            <Center>
+                <VStack p='50px' w='100%' maxW='1200px'>
+                    {
+                        blogs.length > 0 ?
+                        <>
+                        <Flex
+                            w='100%'
+                            h='50px'
+                            align='center'
+                            p='10px'
+                            direction='row'
+                        >
+                            <Text>
+                            Title
+                            </Text>
+                            <Spacer/>
+                            <Text>
+                            Author
+                            </Text>
+                        </Flex>
+                        {
+                            blogs.map(
+                                (i) => {
+                                    return(
+                                        <Box onClick={() => toBlog(i._id)} w='100%'>
+                                            <Flex
+                                                transition='background-color 0.2s'
+                                                w='100%'
+                                                h='50px'
+                                                align='center'
+                                                p='10px'
+                                                direction='row'
+                                                borderRadius='10px'
+                                                _hover={{bg : '#e5e5e5', cursor : 'pointer'}}
+                                            >
+                                                <Heading size='md'>
+                                                {i.title}
+                                                </Heading>
+                                                <Spacer/>
+                                                <Text>
+                                                {i.author.username}
+                                                </Text>
+                                            </Flex>
+                                        </Box>
+                                    )
+                                }
                             )
                         }
-                    )
-                    :
-                    <Text>
-                        No blogs
-                    </Text>
-                }
-            </Wrap>
+                        </>
+                        :
+                        <Text>
+                            No blogs
+                        </Text>
+                    }
+                </VStack>
+            </Center>
         </>
     )
 }
