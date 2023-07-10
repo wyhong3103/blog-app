@@ -1,7 +1,8 @@
 import { Nav } from "../components/Nav";
 import { DateTime } from "luxon";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { Heading, VStack, Box, Text, Container, Textarea, HStack, Button, Flex } from "@chakra-ui/react";
+import { Heading, VStack, Box, Text, Container, Textarea, HStack, Button, Flex, Spacer, Link } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,6 +13,7 @@ export const Blog = () => {
     const [logged, setLogged] = useState(0);
     const [blog, setBlog] = useState({});
     const [status, setStatus] = useState({ok : 0});
+    const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_BLOG_API_URL;
     
     const handleCommentChange = (event) => {
@@ -35,6 +37,34 @@ export const Blog = () => {
                     'Content-Type' : 'application/json'
                 },
                 body : JSON.stringify(content)
+            }
+        );
+        window.location.reload();
+    }
+
+    const deleteBlog = async () => {
+        const accessToken = Cookies.get('accessToken');
+        if (accessToken === undefined) return;
+        await fetch(apiUrl + `/blog/${id}`, 
+            {
+                method : 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                }
+            }
+        );
+        navigate('/');
+    }
+
+    const deleteComment = async (commentid) => {
+        const accessToken = Cookies.get('accessToken');
+        if (accessToken === undefined) return;
+        await fetch(apiUrl + `/blog/${id}/comment/${commentid}`, 
+            {
+                method : 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                }
             }
         );
         window.location.reload();
@@ -99,20 +129,43 @@ export const Blog = () => {
                 <Nav/>
                 <Container  maxW='1100px'>
                     <VStack p="10px" marginRight='0' gap='40px'>
-                        <VStack gap='40px' w='100%'>
-                            <Box w='100%'>
+                        <VStack w='100%'>
+                            <Box w='100%' marginBottom='20px'>
                                 <Heading size='md' textAlign='left'>
                                     {blog.title}
                                 </Heading>
                             </Box>
+                            <Flex w='100%' direction='row'>
+                                <HStack>
+                                    <Text>
+                                        By
+                                    </Text>
+                                    <Text fontWeight='500'>
+                                        {blog.author.username}
+                                    </Text>
+                                    <Text>
+                                        on
+                                    </Text>
+                                    <Text fontWeight='500'>
+                                        {convertDateTime(blog.date)}
+                                    </Text>
+                                </HStack>
+                                <Spacer/>
+                                {
+                                    userId === blog.author._id ?
+                                        <Link onClick={() => deleteBlog()}>Delete</Link>
+                                    :
+                                    null
+                                }
+                            </Flex>
                             <Box p='10px' bg='#f2f2f2' borderRadius='10px' w='100%'>
                                 <div dangerouslySetInnerHTML={{ __html: blog.body}} />
                             </Box>
                         </VStack>
                         <Box w='100%'>
-                            <Heading fontSize='17px' textAlign='left'>
+                            <Text fontSize='17px'>
                                 Comments
-                            </Heading>
+                            </Text>
                         </Box>
                         {
                             blog.comments.length > 0
@@ -123,14 +176,23 @@ export const Blog = () => {
                                     i => {
                                         return(
                                             <Box>
-                                                <HStack marginBottom='10px'>
-                                                    <Text fontWeight='500'>
-                                                        {i.author.username}
-                                                    </Text>
-                                                    <Text fontWeight='500'>
-                                                        {convertDateTime(i.date)}
-                                                    </Text>
-                                                </HStack>
+                                                <Flex w='100%' direction='row' marginBottom='10px'>
+                                                    <HStack>
+                                                        <Text fontWeight='500'>
+                                                            {i.author.username},
+                                                        </Text>
+                                                        <Text fontWeight='500'>
+                                                            {convertDateTime(i.date)}
+                                                        </Text>
+                                                    </HStack>
+                                                    <Spacer/>
+                                                    {
+                                                        userId === blog.author._id || userId === i.author._id  ?
+                                                        <Link onClick={() => deleteComment(i._id)}>Delete</Link>
+                                                        :
+                                                        null
+                                                    }
+                                                </Flex>
                                                 <Box p='10px' bg='#f2f2f2' borderRadius='10px' w='100%'>
                                                     <Text>
                                                         {i.content}
